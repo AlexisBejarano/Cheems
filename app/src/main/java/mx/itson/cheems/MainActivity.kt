@@ -8,6 +8,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -32,7 +33,29 @@ import androidx.core.view.WindowInsetsCompat
             insets
         }
         start()
+
+        val btnRestart = findViewById<Button>(R.id.button_restart)
+        btnRestart.setOnClickListener{
+            restartGame()
+        }
+
     }
+
+        fun restartGame() {
+            // Reinicia las cartas y el juego
+            for (i in 1..6) {
+                val btnCard = findViewById<View>(resources.getIdentifier("carta$i", "id", this.packageName)) as ImageButton
+                btnCard.isEnabled = true  // Habilita las cartas
+                btnCard.setBackgroundResource(R.drawable.icon_pregunta)  // Vuelve a poner el fondo original
+            }
+
+            // Reinicia las variables del juego
+            conteoCards = 0
+            gameOverCard = (1..6).random()  // Elige una nueva carta "perdedora"
+
+            Toast.makeText(this, "Juego reiniciado", Toast.LENGTH_SHORT).show()
+            Log.d("El valor de la carta", "La carta perdedora es ${gameOverCard.toString()}")
+            }
 
     fun start() {
         for(i in 1..6){
@@ -54,57 +77,54 @@ import androidx.core.view.WindowInsetsCompat
 
         if(btnCard.isEnabled) { //Agregue esto para que se ejecute si esta TRUE.
 
-        if(card == gameOverCard){
-            // Ya perdió
+            if(card == gameOverCard){
+                // Ya perdió
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                val vibrattorAdmin = applicationContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                val vibrator = vibrattorAdmin.defaultVibrator
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                    val vibrattorAdmin = applicationContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                    val vibrator = vibrattorAdmin.defaultVibrator
 
-                vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE))
+                    vibrator.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE))
 
-            } else {
-                val vibrator = applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibrator.vibrate(1000)
-            }
-
-            Toast.makeText(this, getString(R.string.text_game_over), Toast.LENGTH_LONG).show()
-
-            for(i in 1..6){
-                val btn = findViewById<View>(
-                    resources.getIdentifier("carta$i", "id", this.packageName)
-                ) as ImageButton
-                if(i == card) {
-                    btn.setBackgroundResource(R.drawable.icon_chempe)
-                }else {
-                    btn.setBackgroundResource(R.drawable.icon_cheems)
+                } else {
+                    val vibrator = applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    vibrator.vibrate(1000)
                 }
-                btn.isEnabled = false // por si pierdes ya no puedas dar clics
-            }
-        } else {
-            //Comtinúa en el juego
-            btnCard.setBackgroundResource(R.drawable.icon_cheems)
-            btnCard.isEnabled = false //Cambia de estado por si le das clic de nuevo a una carta ya presionada
 
-            conteoCards++ //Incrementamos uno siempre y cuando el juego continue xd
-
-            if (conteoCards == 5){
-                Toast.makeText(this, getString(R.string.text_win), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.text_game_over), Toast.LENGTH_LONG).show()
 
                 for(i in 1..6){
                     val btn = findViewById<View>(
                         resources.getIdentifier("carta$i", "id", this.packageName)
                     ) as ImageButton
-                    if(i == gameOverCard) {
+                    if(i == card) {
                         btn.setBackgroundResource(R.drawable.icon_chempe)
                     }else {
                         btn.setBackgroundResource(R.drawable.icon_cheems)
                     }
                     btn.isEnabled = false // por si pierdes ya no puedas dar clics
                 }
+            } else {
+                //Comtinúa en el juego
+                btnCard.setBackgroundResource(R.drawable.icon_cheems)
+                btnCard.isEnabled = false //Cambia de estado por si le das clic de nuevo a una carta ya presionada
 
+                conteoCards++ //Incrementamos uno siempre y cuando el juego continue xd
+
+                if (conteoCards == 5){
+                    Toast.makeText(this, getString(R.string.text_win), Toast.LENGTH_LONG).show()
+
+                    for(i in 1..6){
+                        val btn = findViewById<View>(
+                            resources.getIdentifier("carta$i", "id", this.packageName)
+                        ) as ImageButton
+                        if(i == gameOverCard) {
+                            btn.setBackgroundResource(R.drawable.icon_chempe)
+                        }
+                    }
+
+                }
             }
-        }
     }}
 
     override fun onClick(v: View) {
