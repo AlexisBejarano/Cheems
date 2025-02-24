@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
     class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     var gameOverCard = 0
+        var conteoCards = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,12 @@ import androidx.core.view.WindowInsetsCompat
     }
 
     fun flip(card : Int){
+        var btnCard = findViewById<View>(
+            resources.getIdentifier("carta$card", "id", this.packageName)
+        ) as ImageButton
+
+        if(btnCard.isEnabled) { //Agregue esto para que se ejecute si esta TRUE.
+
         if(card == gameOverCard){
             // Ya perdió
 
@@ -64,23 +71,41 @@ import androidx.core.view.WindowInsetsCompat
             Toast.makeText(this, getString(R.string.text_game_over), Toast.LENGTH_LONG).show()
 
             for(i in 1..6){
-                val btnCard = findViewById<View>(
+                val btn = findViewById<View>(
                     resources.getIdentifier("carta$i", "id", this.packageName)
                 ) as ImageButton
                 if(i == card) {
-                    btnCard.setBackgroundResource(R.drawable.icon_chempe)
+                    btn.setBackgroundResource(R.drawable.icon_chempe)
                 }else {
-                    btnCard.setBackgroundResource(R.drawable.icon_cheems)
+                    btn.setBackgroundResource(R.drawable.icon_cheems)
                 }
+                btn.isEnabled = false // por si pierdes ya no puedas dar clics
             }
         } else {
             //Comtinúa en el juego
-            val btnCard = findViewById<View>(
-                resources.getIdentifier("carta$card", "id", this.packageName)
-            ) as ImageButton
             btnCard.setBackgroundResource(R.drawable.icon_cheems)
+            btnCard.isEnabled = false //Cambia de estado por si le das clic de nuevo a una carta ya presionada
+
+            conteoCards++ //Incrementamos uno siempre y cuando el juego continue xd
+
+            if (conteoCards == 5){
+                Toast.makeText(this, getString(R.string.text_win), Toast.LENGTH_LONG).show()
+
+                for(i in 1..6){
+                    val btn = findViewById<View>(
+                        resources.getIdentifier("carta$i", "id", this.packageName)
+                    ) as ImageButton
+                    if(i == gameOverCard) {
+                        btn.setBackgroundResource(R.drawable.icon_chempe)
+                    }else {
+                        btn.setBackgroundResource(R.drawable.icon_cheems)
+                    }
+                    btn.isEnabled = false // por si pierdes ya no puedas dar clics
+                }
+
+            }
         }
-    }
+    }}
 
     override fun onClick(v: View) {
         when(v.id){
