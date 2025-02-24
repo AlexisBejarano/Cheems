@@ -32,42 +32,30 @@ import androidx.core.view.WindowInsetsCompat
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        start()
-
         val btnRestart = findViewById<Button>(R.id.button_restart)
-        btnRestart.setOnClickListener{
-            restartGame()
+        btnRestart.setOnClickListener {
+            start() // Reinicia el juego usando la función start()
         }
+
+        start() // Inicia el juego al abrir la app
 
     }
 
-        fun restartGame() {
-            // Reinicia las cartas y el juego
-            for (i in 1..6) {
-                val btnCard = findViewById<View>(resources.getIdentifier("carta$i", "id", this.packageName)) as ImageButton
-                btnCard.isEnabled = true  // Habilita las cartas
-                btnCard.setBackgroundResource(R.drawable.icon_pregunta)  // Vuelve a poner el fondo original
-            }
-
-            // Reinicia las variables del juego
-            conteoCards = 0
-            gameOverCard = (1..6).random()  // Elige una nueva carta "perdedora"
-
-            Toast.makeText(this, "Juego reiniciado", Toast.LENGTH_SHORT).show()
-            Log.d("El valor de la carta", "La carta perdedora es ${gameOverCard.toString()}")
-            }
-
     fun start() {
-        for(i in 1..6){
-            val btnCard = findViewById<View>(
-                resources.getIdentifier("carta$i", "id", this.packageName)
-            ) as ImageButton
-            btnCard.setOnClickListener(this)
+        for (i in 1..6) {
+            val btnCard = findViewById<ImageButton>(
+                resources.getIdentifier("carta$i", "id", packageName)
+            )
+            btnCard.isEnabled = true
             btnCard.setBackgroundResource(R.drawable.icon_pregunta)
+            btnCard.setOnClickListener(this)
         }
-        gameOverCard = (1 .. 6).random()
 
-        Log.d("El valor de la carta", "La carta perdedora es ${gameOverCard.toString()}")
+        conteoCards = 0
+        gameOverCard = (1..6).random()
+
+        Toast.makeText(this, "Juego iniciado", Toast.LENGTH_SHORT).show()
+        Log.d("El valor de la carta", "La carta perdedora es $gameOverCard")
     }
 
     fun flip(card : Int){
