@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 
     var gameOverCard = 0
         var conteoCards = 0
+        var inicio = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +38,32 @@ import androidx.core.view.WindowInsetsCompat
             start() // Reinicia el juego usando la función start()
         }
 
+        val btnViewCard = findViewById<Button>(R.id.button_volear)
+        btnViewCard.setOnClickListener {
+            viewCard()
+        }
+
         start() // Inicia el juego al abrir la app
 
     }
 
+        fun viewCard() {
+            Log.d("Se voltearon las cartas", "La carta perdedora es $gameOverCard")
+
+            for (i in 1..12) {
+                val btnCard = findViewById<ImageButton>(
+                    resources.getIdentifier("carta$i", "id", packageName)
+                )
+
+                if (i == gameOverCard) {
+                    btnCard.setBackgroundResource(R.drawable.icon_chempe) // Carta perdedora
+                } else {
+                    btnCard.setBackgroundResource(R.drawable.icon_cheems) // Cartas normales
+                }
+            }
+        }
     fun start() {
-        for (i in 1..6) {
+        for (i in 1..12) {
             val btnCard = findViewById<ImageButton>(
                 resources.getIdentifier("carta$i", "id", packageName)
             )
@@ -52,9 +73,16 @@ import androidx.core.view.WindowInsetsCompat
         }
 
         conteoCards = 0
-        gameOverCard = (1..6).random()
+        gameOverCard = (1..12).random()
 
-        Toast.makeText(this, "Juego iniciado", Toast.LENGTH_SHORT).show()
+        if(inicio == 0){
+            Toast.makeText(this, "HOLA PAPUSHO, BIENVENIDO", Toast.LENGTH_SHORT).show()
+            inicio = 1
+        } else {
+            Toast.makeText(this, "Juego reiniciado", Toast.LENGTH_SHORT).show()
+
+        }
+
         Log.d("El valor de la carta", "La carta perdedora es $gameOverCard")
     }
 
@@ -81,7 +109,7 @@ import androidx.core.view.WindowInsetsCompat
 
                 Toast.makeText(this, getString(R.string.text_game_over), Toast.LENGTH_LONG).show()
 
-                for(i in 1..6){
+                for(i in 1..12){
                     val btn = findViewById<View>(
                         resources.getIdentifier("carta$i", "id", this.packageName)
                     ) as ImageButton
@@ -99,10 +127,10 @@ import androidx.core.view.WindowInsetsCompat
 
                 conteoCards++ //Incrementamos uno siempre y cuando el juego continue xd
 
-                if (conteoCards == 5){
+                if (conteoCards == 11){
                     Toast.makeText(this, getString(R.string.text_win), Toast.LENGTH_LONG).show()
 
-                    for(i in 1..6){
+                    for(i in 1..12){
                         val btn = findViewById<View>(
                             resources.getIdentifier("carta$i", "id", this.packageName)
                         ) as ImageButton
@@ -123,6 +151,12 @@ import androidx.core.view.WindowInsetsCompat
             R.id.carta4 -> { flip(4)}
             R.id.carta5 -> { flip(5)}
             R.id.carta6 -> { flip(6)}
+            R.id.carta7 -> { flip(7)}
+            R.id.carta8 -> { flip(8)}
+            R.id.carta9 -> { flip(9)}
+            R.id.carta10 -> { flip(10)}
+            R.id.carta11 -> { flip(11)}
+            R.id.carta12 -> { flip(12)}
         }
     }
 }
